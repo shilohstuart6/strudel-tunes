@@ -51,4 +51,5 @@ arrange(
   // OUTRO
   [4, stack(drums, bass, chords, riff2)],
   [4, stack(drums, bass, riff2)],
+  [4, stack(riffsDuo, bass)],
 ).scope()
