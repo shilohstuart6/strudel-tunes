@@ -1,0 +1,19 @@
+setcpm(118/4)
+
+let drums = s("sbd*4, ~ [sd,cp] ~ [sd,cp], hh*8")
+  .gain(.5)
+  .color("cyan")._scope()
+let bass =  n("[0 ~ 0 0 ~ 0 0 0]").add(n("[0 -2 -1 0]/4")).scale("bb2:minor").s("sawtooth")
+  .gain(.8).delay(.25).lpf(1600).lpenv(200).orbit(2)
+  .color("lime")._scope()
+let chords = n("[0 -2 -1 0]/4").add(n("[0, 2, 4]")).scale("bb3:minor").s("saw")
+  .gain(.3).lpf(1200).room(1.5)
+  .color("purple")._scope()
+  let arp = n("[0 -2 -1 0]/4").add(n("[0,2,4]")).arp("0 [[0,2]*2] 1 [0,2]").scale("bb3:minor").s("triangle")
+  .gain(.9).lpf(1800).room(2).duck(2).duckattack(.2)
+  .color("yellow")._scope()
+
+$: drums
+$: bass
+$: chords
+$: arp
