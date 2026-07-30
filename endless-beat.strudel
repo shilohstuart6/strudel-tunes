@@ -1,0 +1,54 @@
+setcpm(124/4)
+
+// DRUMS
+let kick    = s("bd*4").bank("RolandTR909").gain(0.9).color("darkblue")
+let clap    = s("~ cp ~ cp").bank("RolandTR909").gain(0.7).color("purple")
+let clap2   = s("cp*4").bank("RolandTR909").gain(0.9).color("purple")
+let hats    = s("hh*8").bank("RolandTR909").gain("0.25 0.4").color("green")
+let openhat = s("~ oh ~ oh").bank("RolandTR909").gain(0.35).color("salmon")
+
+let drums = stack(kick, clap, hats, openhat)
+let breakdownDrums = stack(hats.gain(0.15), openhat.gain(0.2))
+let dropTheBeat = stack(kick, clap2, hats).gain("<.1 .15 .2 .25>").ply(2)
+
+// BASS
+let bass = n("0 ~ 0 0 ~ 0 0 ~").scale("c2:minor").s("sawtooth").lpf(500).gain(0.8).color("lime")
+
+// CHORDS
+let chords = n("<3 4 -2 0>").add(n("0,2,4")).scale("C3:harmonic:minor").s("gm_epiano1")
+  .gain(0.5).lpf(1500).room(0.4).color("cyan")
+
+// RIFFS
+let riff1 = n("<[3 ~ 5 7 ~ 5 3 ~] [4 ~ 6 8 ~ 6 4 ~] [-2 ~ 0 2 ~ 0 -2 ~] [0 2 4 ~ 2 0 ~ 0]>")
+  .scale("C4:harmonic:minor").s("triangle")
+  .gain(0.45).adsr(0.01, 0.1, 0.3, 0.1).delay(0.25).room(0.2).color("orange")
+
+let riff2 = n("<[~ 3 ~ 7 5 ~ 7 ~] [~ 4 ~ 8 6 ~ 8 ~] [~ -2 ~ 2 0 ~ 2 ~] [~ 0 ~ 4 2 ~ 0 ~]>")
+  .scale("C4:harmonic:minor").s("square")
+  .gain(0.25).adsr(0.01, 0.15, 0.2, 0.15).lpf(2000).distort(0.2).room(0.3).color("gold")
+
+let riffsDuo = stack(riff1.pan(0), riff2.pan(1))
+ 
+// ARRANGEMENT
+arrange(
+  // INTRO
+  [4, stack(riffsDuo, bass)],
+  [4, stack(drums, bass, riff1)],
+
+  // RIFF 1
+  [8, stack(drums, bass, chords, riff1)],
+
+  // RIFF 2
+  [8, stack(drums, bass, chords, riff2)],
+
+  // BREAK
+  [4, stack(breakdownDrums.gain(.1), chords.gain(.25).lpf(400))],
+  [4, stack(breakdownDrums.mask("[1 1 1 0]/4"), dropTheBeat.mask("[0 0 0 1]/4"), bass.gain("[.8 .85 .9 .95]/4"), chords.gain(.35))],
+
+  // DROP
+  [16, stack(drums, bass, chords, riffsDuo)],
+
+  // OUTRO
+  [4, stack(drums, bass, chords, riff2)],
+  [4, stack(drums, bass, riff2)],
+).scope()
