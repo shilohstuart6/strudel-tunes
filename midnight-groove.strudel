@@ -1,0 +1,34 @@
+setcpm(92/4)
+
+let kick    = s("bd ~ [~ bd] bd ~ ~ [bd ~] ~").bank("RolandTR909").color("darkblue")
+let snare   = s("~ sd ~ sd").bank("RolandTR909").color("purple")
+let openhat = s("~ ~ oh ~").bank("RolandTR909").gain(0.3).color("salmon")
+let hats    = s("hh*8").bank("RolandTR909").gain(0.3).color("green")
+let fill    = s("~ ~ ~ [sd sd sd sd]").bank("RolandTR909").gain(0.6).color("yellow")
+let bass    = n("<0 -2 2 -3>(3,8)").scale("C2:minor").s("sawtooth").lpf(700).gain(0.85).color("lime")
+let chords  = n("<0 -2 2 -3>").add(n("0,2,4,6")).scale("C3:minor").s("piano").gain(0.5).color("cyan")
+
+let melody  = n("~ 4 6 ~ 7 ~ 6 4 ~ 2 ~ 3 4 ~ ~ ~").scale("C4:minor").s("triangle")
+  .gain(0.6).room(0.3).color("skyblue")
+let harmony = n("~ 4 6 ~ 7 ~ 6 4 ~ 2 ~ 3 4 ~ ~ ~")
+  .add(n("-2"))
+  .scale("C4:minor")
+  .s("triangle").gain(0.3).room(0.3).color("lightgrey")
+
+let intro  = stack(hats, chords).lpf(900)
+let verse = stack(kick, hats, bass, chords)
+let chorus = stack(kick, snare, hats, openhat, bass, chords, melody)
+let bridge = stack(chords, melody.gain(0.4), hats.gain(0.2)).lpf(2000)
+
+arrange(
+  [4, intro],
+  [8, verse],
+  [8, chorus],
+  [8, verse],
+  [4, chorus],
+  [4, stack(chorus, harmony)], 
+  [4, bridge],
+  [8, stack(chorus, harmony, fill)],
+).pianoroll({
+  vertical: 1
+})
