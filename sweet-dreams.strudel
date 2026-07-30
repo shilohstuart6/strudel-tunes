@@ -33,15 +33,15 @@ let p6 = n("[2@2 2@2 0@4 2@2 2@3 0@4 2@2 3@6 2@2 1@6 ~]")
 let p7 = n("[2@2 2@2 0@4 2@2 2@2 0@2 2@5 2@2 1@9 ~@4]")
 let p8 = n("[2@2 2@2 0@4 2@4 0@2 2@5 3@6 2@2 1@6 ~]")
 
-let chorus = slow(2, cat(p1, p2, p3, p4, p5, p6, p7, p8)).scale("c5:minor").s("saw")
-  .gain(.1).adsr(.1, .2, .6, .3).lpf(2500).distort(.8).room(2.5)
+let chorus = slow(2, cat(p1, p2, p3, p4, p5, p6, p7, p8)).scale("c5:minor").s("gm_synth_strings_2")
+  .gain(.2).adsr(.1, .2, .6, .3).lpf(2500).distort(.8).room(1.5)
 
 // CELLO
 let c1 = n("[~@6 [~ [0 1]] [2 1 0 -1] 0@4]")
 let c2 = n("[2@3 3@2 4 2@2 0@16]")
 
 let cello = slow(3, cat(c1, c2)).scale("c5:minor").s("gm_cello")
-  .gain(.6).lpf(1200).room(1.5)
+  .gain(.4).lpf(1500).lpenv(700).room(1.5)
 
 // ARRANGEMENT
 arrange(
