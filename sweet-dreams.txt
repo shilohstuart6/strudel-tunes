@@ -1,0 +1,53 @@
+setcpm(126/4)
+
+// DRUMS
+let kick = s("bd*4").bank("r8").gain(".8 .15!3").lpf(500)
+let snare = s("~ [sd, cp] ~ [sd, cp]").bank("r8").gain(.2)
+let hat = s("hh*8").bank("r8").gain(".03!7 .1").hpf(100)
+let ohat = s("~ oh ~ oh").bank("rhythmace").gain(.03).hpf(100)
+
+let drumkit = stack(kick, snare, hat, ohat)
+
+// SYNTH
+let riff = n("[~ ~ 0 0 2 2 0 0 -2 -2 0 0 -3 -3 -1 0]/2")
+  .scale("c4:minor").s("sawtooth")
+  .gain(.6).adsr(.4, .4, .6, .25)
+  .delay("0.25:0.357:0.25").pan("0 1").lpf(sine.range(700, 2500).slow(8))
+
+// BASS
+let bass = n("[0 -3 -2 -5]/2").scale("c2:minor").s("sawtooth")
+  .gain(.2).lpf(3000).distort(.3)
+
+// CHORDS
+let chords = n("[0 2 -2 -3]/2").add(n("0,2,4")).scale("c3:minor").s("sawtooth")
+  .gain(.1).adsr(.8, .4, .6, .3).lpf(1800).room(.05).pan("1 0")
+
+// MELODY
+let p1 = n("[~@4 2@4 2@4 0@4 2@2 2@4 2@3 1@7]")
+let p2 = n("[2@2 2@2 0@2 2@7 2@2 0@2 2@2 3@6 2@3 1@6]")
+let p3 = n("[2@2 2@2 0@2 2@7 2@2 0@2 2@1 2@5 2@4 1@7]")
+let p4 = n("[2@4 0@2 2@4 0@6 2@2 2@2 3@2 2@4 1@6]")
+
+let p5 = n("[2@2 2@2 0@4 2@4 0@2 2@5 2@2 1@9 ~@4]")
+let p6 = n("[2@2 2@2 0@2 2@7 0@4 2@2 3@6 2@3 1@6]")
+let p7 = n("[2@2 2@2 0@4 2@2 2@2 0@2 2@5 2@2 1@9 ~@4]")
+let p8 = n("[2@4 0@2 2@4 0@6 2@2 2@2 3@2 2@4 1@6]")
+
+let chorus = slow(2, cat(p1, p2, p3, p4, p5, p6, p7, p8)).scale("c5:minor").s("saw")
+  .gain(.5).adsr(.1, .2, .6, .3).lpf(1500).distort(.3)
+
+// CELLO
+let c1 = n("[~@6 [~ [0 1]] [2 1 0 -1] 0@4]")
+let c2 = n("[2@3 3@2 4 2@2 0@16]")
+
+let cello = slow(3, cat(c1, c2)).scale("c5:minor").s("gm_cello")
+  .gain(.8).lpf(1200).room(1.5)
+
+// ARRANGEMENT
+arrange(
+  [4, stack(drumkit, riff, bass, chords)],
+  [16, stack(drumkit, riff, bass, chords, chorus)],
+  [2, stack(riff, bass, chords)],
+  [6, stack(drumkit.mask("[0 1 1]/6"), riff, bass, chords, cello)],
+  [16, stack(drumkit, riff, bass, chords, chorus)],
+).scope()
