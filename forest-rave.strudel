@@ -1,0 +1,211 @@
+// ═══════════════════════════════════════════════════════════
+//  Forest Rave · written by Claude (Opus 5.5) for Written by a Chatbot
+//  The music video:  https://youtu.be/PwXHzI735qg
+//  How it was made:  https://youtu.be/tFW49yw-vsE
+//  Every note from the human:  https://claude.ai/artifact/X4acV5Gb89puZ3EHS4Twvf
+//
+//  Sounds:
+//  · Drum break: the "Amen" break, played by Gregory C. Coleman on
+//    "Amen, Brother" by The Winstons (1969), in slices from Dirt-Samples (amencutup)
+//  · Birds and insects: Dirt-Samples (github.com/tidalcycles/Dirt-Samples)
+//  · Folk harp, recorder and bodhrán: VCSL, CC0 (github.com/sgossner/VCSL)
+//  · TR-909 hits: tidal-drum-machines (github.com/ritchse/tidal-drum-machines)
+//  · Everything else is synthesized in Strudel.
+// ═══════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════
+//  FOREST RAVE (Celtic mix)  ·  174 BPM  ·  F minor (Aeolian)  ·  160 bars (~3:41)
+//  golden 16 · dayend 24 · twilight 16 · gathering 16
+//  drop1 32 · moonlight 16 · drop2 24 · sunrise 16
+// ═══════════════════════════════════════════════════════════
+// TOTAL_BARS 160
+
+// HYDRA START
+await initHydra({ detectAudio: true })
+voronoi(6, 0.3, 0.2)
+  .color(0.2, 0.9, 0.5)
+  .modulate(noise(2, 0.1), () => 0.05 + a.fft[0] * 0.4)
+  .kaleid(() => 3 + Math.floor(a.fft[1] * 6))
+  .add(osc(20, 0.05, 1.2).color(0.9, 0.3, 1).mult(shape(4, 0.4, 0.3)), () => a.fft[2] * 0.8)
+  .scale(() => 1 + a.fft[0] * 0.15)
+  .out()
+// HYDRA END
+
+samples('github:tidalcycles/dirt-samples')
+samples('https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json')
+setcpm(174/4)
+
+// ─────────── HARMONY (8-bar loop: Fm · Eb · Db · Eb, two bars each, open fifths) ───────────
+const CHORDS = "<[f3,c4,g4,ab4] [eb3,bb3,f4,g4] [db3,ab3,eb4,f4] [eb3,bb3,eb4,g4]>"
+const HARP   = "<[f3,c4,f4,ab4,c5,g5] [eb3,bb3,eb4,g4,bb4,f5] [db3,ab3,db4,f4,ab4,eb5] [eb3,bb3,eb4,g4,bb4,g5]>"
+const ROOTS  = "<f1 eb2 db2 eb2>"
+// the air: a tin-whistle tune with triplet "cuts" (Celtic ornaments)
+const AIR = `<[c5@2 [eb5 f5 eb5] c5 ab4@2 bb4 c5] [f4@5 ~ [g4 ab4 bb4]@2]
+              [eb5@2 [f5 g5 f5] eb5 bb4@2 c5 bb4] [g4@6 [ab4 g4 f4]@2]
+              [ab4@2 [bb4 c5 bb4] ab4 f4@2 ab4 bb4] [c5@4 eb5@2 db5 c5]
+              [bb4@2 [c5 db5 c5] bb4 g4@2 bb4 c5] [eb5@3 f5 g5@2 [f5 eb5 c5]@2]>`
+
+// ─────────── FOREST (orbit 4) ───────────
+let birds    = s("[~ birds3:<0 3 7 11 14>] ~ [~ ~ birds:<1 4 6>] ~").slow(2)
+                 .gain(0.3).pan(rand).room(0.6).size(4).orbit(4)
+let crickets = s("insect:<0 1>").slow(2).gain(0.16).hpf(2500).pan(sine.slow(7)).orbit(4)
+let hoot     = note("[~ ~ ~ ~] [~ ~ ~ ~] [a4@2 ~ ~] [a4 a4@2 ~]").s("sine").slow(4)
+                 .attack(0.06).release(0.25).vib(4).vibmod(0.3).lpf(900)
+                 .gain(0.4).room(0.6).size(4).orbit(4)
+let owlCall  = note("~ a4@2 ~ ~ a4 a4@2 ~").s("sine")
+                 .attack(0.06).release(0.3).vib(4).vibmod(0.3).lpf(900)
+                 .gain(0.6).room(0.7).size(6).orbit(4)
+
+// ─────────── CELTIC (orbit 2) ───────────
+let harp     = note(HARP).slow(2).arp("0 1 2 3 4 5 4 3").s("folkharp").clip(4)
+                 .gain(0.55).pan(sine.slow(4).range(0.3, 0.7)).room(0.5).size(5).orbit(2)
+let harpRun  = note(HARP).slow(2).arp("[0 1 2 3 4 5 4 5]*2").s("folkharp").clip(2)   // rolling 16ths for the drops
+                 .gain(0.32).hpf(400).room(0.3).orbit(2)
+let gliss    = note(HARP).slow(2).arp("~ ~ ~ ~ ~ ~ [0 1 2 3 4 5]@2").s("folkharp").clip(4) // sweep into the next bar
+                 .gain(0.5).room(0.5).orbit(2)
+let whistle  = note(AIR).s("recorder_soprano_sus").clip(1).attack(0.01).release(0.2)
+                 .gain(0.6).room(0.45).size(4)
+                 .delay(0.2).delaytime(0.517).delayfeedback(0.25).orbit(2)
+let fiddle   = note(AIR).sub(note(12)).s("sawtooth").attack(0.04).release(0.25)
+                 .vib(6).vibmod(0.15).bpf(1400).bpq(1.2).lpf(4000)
+                 .gain(0.22).room(0.4).orbit(2)
+let drone    = note("[f2,c3]").s("sawtooth").attack(1.5).release(2)
+                 .lpf(sine.range(400, 900).slow(8)).gain(0.09).room(0.6).orbit(2)
+let pad      = note(CHORDS).slow(2).s("supersaw").detune(0.25)
+                 .attack(0.6).release(1.5).lpf(900).gain(0.13)
+                 .room(0.5).size(5).orbit(2)
+let stabs    = note(CHORDS).slow(2).add(note(12)).struct("~ x ~ ~ ~ ~ x ~")
+                 .s("supersaw").decay(0.12).sustain(0).lpf(3200).gain(0.2).orbit(2)
+
+// ─────────── BASS (orbit 3) ───────────
+let sub      = note(ROOTS).slow(2).s("sine").gain(0.45).orbit(3)
+let subPulse = note(ROOTS).slow(2).struct("x@3 ~ x@3 ~").s("sine").release(0.1).gain(0.4).orbit(3)
+let reese    = note(ROOTS).slow(2).add(note("12,12.12"))
+                 .struct("x@6 ~@2 x@3 ~ x@3 ~")
+                 .s("sawtooth").lpf(sine.range(250, 1100).fast(2)).lpq(6)
+                 .distort("1.5:0.5").gain(0.36).orbit(3)
+let dropBoom = note("f1").s("sine").penv(14).pdecay(1.1).decay(1.6).sustain(0)
+                 .gain(0.9).orbit(3)
+
+// ─────────── DRUMS (orbit 1) ───────────
+const tr = (p) => s(p).bank("RolandTR909")
+// bodhrán: big open hits, muted taps and a triplet on the small drum
+let bodhran = n("7 3 13 4 8 3 [14 12 13] 4").s("framedrum")
+                .gain("0.75 0.35 0.45 0.3 0.6 0.35 0.45 0.3").pan(0.45)
+let bodhranRoll = n("[14 12 13]*4").s("framedrum").gain(0.4)
+// Rory the woodpecker: a steady tap all evening, syncopated pecks and rolls once the party starts
+const peck = (p) => tr(p).hpf(800).pan(0.7)
+let tap      = peck("rim*4").gain(0.16)                          // quarter notes: foraging
+let tap8     = peck("rim*8").gain("[0.24 0.12]*4")               // steady 8ths
+let pecks    = peck("~ ~ ~ rim ~ ~ rim ~ ~ ~ ~ rim ~ rim ~ ~").gain(0.28)  // syncopated, for dancing
+let rollA    = peck("<~ ~ ~ [~ ~ ~ [rim*4]]>").gain("[0.2 0.24 0.28 0.32]")             // 4 hits, every 4th bar
+let rollB    = peck("<~ [~ ~ ~ [rim*8]]>").gain("[0.12 0.14 0.16 0.18 0.2 0.22 0.24 0.27]") // 8 hits, every 2nd bar
+let rollC    = peck("<~!7 [~ ~ [rim*16]]>").gain(saw.range(0.1, 0.28).fast(8))          // 16-hit run, every 8th bar
+let roryBuild= peck("<[rim*8]!8 [rim*16]!4 ~!4>").gain(saw.range(0.12, 0.3).slow(16))
+// half-time (feels ~87 BPM)
+let hKick  = tr("bd ~ ~ ~ ~ ~ ~ ~ ~ ~ bd ~ ~ ~ ~ ~").gain(0.65).lpf(3000)
+               .duckorbit("2:3").duckattack(0.2).duckdepth(0.4)
+let hSnare = tr("~ ~ ~ ~ ~ ~ ~ ~ sd ~ ~ ~ ~ ~ ~ ~").gain(0.5).room(0.3)
+let hHats  = tr("hh*8").gain("[0.2 0.1]*4").pan(0.6)
+let shaker = tr("hh*16").gain("[0.08 0.14 0.1 0.18]*4").hpf(7000).pan(0.4)
+// full d&b two-step
+let kick   = tr("bd ~ ~ ~ ~ ~ ~ ~ ~ ~ bd ~ ~ ~ ~ ~").gain(0.85).shape(0.3)
+               .duckorbit("2:3").duckattack(0.12).duckdepth(0.65)
+let snare  = stack(tr("~ sd ~ sd").gain(1), tr("~ cp ~ cp").gain(0.5)).room(0.15)
+let ghosts = tr("~ ~ ~ ~ ~ ~ ~ sd ~ sd ~ ~ ~ ~ ~ sd").gain(0.22)
+let hats   = tr("hh*16").gain("[0.3 0.15 0.4 0.15]*4").hpf(6000)
+let ohats  = tr("~ oh ~ oh").late(0.125).gain(0.25)
+let amen   = s("amencutup*8").n("<[0 .. 7] [8 .. 15] [16 .. 23] [24 .. 31]>")
+               .speed(1.27).cut(1).hpf(250).gain(0.4)
+let ride   = tr("rd*8").gain(0.16).hpf(5000)
+let crash  = tr("cr").gain(0.55)
+
+// ─────────── BUILD FX (orbit 4) ───────────
+// the snare roll keeps doubling right up to the breath: 4ths → 8ths → 16ths → 32nds, rising in pitch
+let roll   = tr("<[sd*4]!8 [sd*8]!4 [sd*16]!2 [[sd*4] [sd*4] [sd*8] [sd*8]] ~>")
+               .gain(saw.range(0.32, 0.62).slow(16)).speed(saw.range(0.95, 1.35).slow(16))
+let kickBuild = tr("<~!12 [bd*2] [bd*4] [bd*4 bd*4 bd*8 bd*8] ~>").gain(saw.range(0.5, 0.62).slow(16)).lpf(3000)
+let riser  = s("white*16").attack(0.005).release(0.06)
+               .hpf(saw.range(300, 9000).slow(16)).gain(saw.range(0, 0.28).slow(16)).orbit(4)
+let swell  = note("[f2,c3,f3,c4]").s("sawtooth").attack(0.3).release(0.4)
+               .lpf(saw.range(300, 5000).slow(16)).gain(saw.range(0.04, 0.16).slow(16)).orbit(4)
+let miniRoll = tr("<~!12 [sd*8]!2 [sd*16] [sd*32]>").gain(saw.range(0.1, 0.6).slow(16))
+let miniRiser= riser.mask("<0!12 1!4>")
+
+// ─────────── SECTIONS ───────────
+let golden = stack(
+  birds, crickets, drone, pad.gain(0.1), tap.mask("<0!4 1!12>"),
+  harp.mask("<0!2 1!14>"), gliss.mask("<0!7 1 0!7 1>"),
+  whistle.mask("<0!8 1!8>").gain(0.45),
+  stack(hKick, hSnare).lpf(1200).mask("<0!8 1!8>"),
+)
+
+// ─────────── FERN & FINN: a croaked duet on the lily pads, Finn low, Fern a tenth above ───────────
+// It comes in gently: one croak from Finn (bar 24), a few more, Fern answers (bar 25), then the full duet (bars 27–30).
+const croak = (pat) => note(pat).s("sawtooth").fm(1.2).fmh(0.5).vowel("o").lpf(950).penv(4).pdecay(0.06)
+  .attack(0.012).decay(0.12).sustain(0).release(0.06).room(0.35).size(2).orbit(4)
+const FINN_PAT = "<~!7 [~ ~ ~ g2] [~ ab2 ~ ~] [~ ab2 ~ [ab2 ab2]] [~ ~ ~ [g2 g2]] [~ g2 [~ g2] g2] [~ f2 ~ [f2 f2]] [~ f2 [f2 f2] ~] ~!10>"
+const FERN_PAT = "<~!7 ~ [~ ~ ~ [~ c4]] [~ c4 ~ [~ c4]] [~ bb3 ~ [bb3 bb3]] [~ bb3 [~ bb3] bb3] [~ ab3 ~ [ab3 ab3]] [~ ab3 [ab3 ab3] ~] ~!10>"
+let frogs = stack(croak(FINN_PAT).gain(2.3).pan(0.38), croak(FERN_PAT).gain(1.6).pan(0.62).fmh(0.75))
+  .velocity("<0!7 0.45 0.6 0.8 0.95 1 1 1 0!10>") // (Finn skips beat 2 of bar 27: he's swallowing a fly)
+// in the drops they croak in the gaps between kick and snare, with a duet fill every other bar
+const FINN_DROP = "<[~ [~ ab2] ~ ~] [~ [~ ab2] ~ ~] [~ [~ g2] ~ ~] [~ [~ g2] [~ g2] [g2 g2]] [~ [~ f2] ~ ~] [~ [~ f2] ~ ~] [~ [~ g2] ~ ~] [~ [~ g2] [~ g2] [g2 g2]]>"
+const FERN_DROP = "<[~ ~ ~ [~ c4]] [~ ~ ~ [~ c4]] [~ ~ ~ [~ bb3]] [~ [~ bb3] [~ bb3] [bb3 bb3]] [~ ~ ~ [~ ab3]] [~ ~ ~ [~ ab3]] [~ ~ ~ [~ bb3]] [~ [~ bb3] [~ bb3] [bb3 bb3]]>"
+let frogsDrop = stack(croak(FINN_DROP).gain(4.2).pan(0.38), croak(FERN_DROP).gain(3.0).pan(0.62).fmh(0.75))
+
+let dayend = stack(
+  birds, crickets.gain(0.1), drone, pad, harp.gain(0.42), whistle.velocity("<1!7 0.6!7 1!10>"), frogs,
+  hKick, hSnare, hHats, sub, bodhran.mask("<0!8 1!16>"), tap.mask("<1!8 0!16>"), tap8.mask("<0!8 1!16>"),
+)
+
+let twilight = stack(
+  hoot, crickets, drone, pad.lpf(sine.range(500, 1500).slow(16)),
+  harp.lpf(sine.range(1200, 5000).slow(16)).gain(0.45), gliss.mask("<0!15 1>"),
+  hKick, hSnare, hHats, bodhran, shaker, subPulse, tap8.mask("<1!6 0!6 1!4>"), // Rory flies to the rave (bars 47–52)
+  whistle.mask("<0!8 1!8>").gain(0.5),
+)
+
+let gathering = stack(
+  owlCall.mask("<0!15 1>"),
+  stack(pad.lpf(saw.range(500, 4000).slow(16)), hHats, shaker.gain(0.2), drone,
+        harp.lpf(saw.range(1500, 8000).slow(16)).gain(saw.range(0.35, 0.55).slow(16)),
+        gliss.mask("<0 1>"))
+    .mask("<1!15 0>"),
+  stack(hKick, bodhran).mask("<1!12 0!4>"), subPulse.mask("<1!14 0!2>"),
+  stack(roll, kickBuild, roryBuild, bodhranRoll.mask("<0!8 1!7 0>"), riser, swell).mask("<1!15 0>"),
+)
+
+let drop1 = stack(
+  crash.mask("<1 0!7>"), dropBoom.mask("<1 0!31>"),
+  kick, snare, ghosts, hats, ohats, amen.mask("<0!8 1!24>"),
+  sub.gain(0.65), reese, harpRun, stabs.mask("<0!16 1!16>"),
+  whistle.mask("<0!16 1!16>").gain(0.55), pad.gain(0.08), frogsDrop, stack(pecks, rollA.mask("<0!8 1!8 0!16>"), rollB.mask("<0!16 1!16>"), rollC.mask("<0!24 1!8>")).velocity(1.3),
+)
+
+let moonlight = stack(
+  hoot, birds.gain(0.18), drone, pad, harp, whistle.gain(0.5), sub.mask("<1!12 0!4>"),
+  bodhran.gain(0.5).mask("<0!8 1!4 0!4>"), miniRoll, miniRiser, gliss.mask("<0!15 1>"),
+)
+
+let drop2 = stack(
+  crash.mask("<1 0!7>"), dropBoom.mask("<1 0!23>"),
+  kick, snare, ghosts, hats, ohats, amen, ride,
+  sub.gain(0.65), reese, harpRun, stabs, whistle.gain(0.6), fiddle, pad.gain(0.08), frogsDrop, stack(pecks, rollB, rollC).velocity(1.3),
+)
+
+let sunrise = stack(
+  birds, crickets.gain(0.08), drone, pad, harp, whistle.gain(0.45), sub.mask("<1!8 0!8>"), tap.mask("<0!4 1!8 0!4>"),
+  stack(hKick, hSnare, hHats, bodhran.gain(0.4)).mask("<1!4 0!12>"),
+).velocity(saw.range(1, 0.15).slow(16))
+
+// ─────────── ARRANGEMENT ───────────
+arrange(
+  [16, golden],
+  [24, dayend],
+  [16, twilight],
+  [16, gathering],
+  [32, drop1],
+  [16, moonlight],
+  [24, drop2],
+  [16, sunrise],
+).postgain(0.42)

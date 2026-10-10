@@ -1,19 +1,32 @@
 setcpm(118/4)
 
-let drums = s("sbd*4, ~ [sd,cp] ~ [sd,cp], hh*8")
-  .gain(.5)
-  .color("cyan")._scope()
-let bass =  n("[0 ~ 0 0 ~ 0 0 0]").add(n("[0 -2 -1 0]/4")).scale("bb2:minor").s("sawtooth")
-  .gain(.8).delay(.25).lpf(1600).lpenv(200).orbit(2)
-  .color("lime")._scope()
-let chords = n("[0 -2 -1 0]/4").add(n("[0, 2, 4]")).scale("bb3:minor").s("saw")
-  .gain(.3).lpf(1200).room(1.5)
-  .color("purple")._scope()
-  let arp = n("[0 -2 -1 0]/4").add(n("[0,2,4]")).arp("0 [[0,2]*2] 1 [0,2]").scale("bb3:minor").s("triangle")
-  .gain(.9).lpf(1800).room(2).duck(2).duckattack(.2)
+let arp = n("[0 -2 -1 0]/4").add(n("[0,2,4]")).arp("0 [[0,2]*2] 1 [0,2]")
+  .scale("bb4:minor").s("zzfx")
+  .gain(.4).lpf(2000).room(4).duck(2).duckattack(.5).distort(.2)
   .color("yellow")._scope()
-
-$: drums
-$: bass
-$: chords
-$: arp
+let chords = n("[0 -2 -1 0]/4").add(n("[0, 2, 4]"))
+  .scale("bb3:minor").s("saw")
+  .gain(.3).lpf(1200).room(1.5).orbit(2)
+  .color("orange")._scope()
+let bass =  n("[0 ~ 0 0 ~ 0 0 0]").add(n("[0 -2 -1 0]/4"))
+  .scale("bb2:minor").s("sawtooth")
+  .gain(.8).delay(.25).lpf(1600).lpenv(200)
+  .color("purple")._scope()
+let drums = s("sbd*4, ~ [[sd,cp]*2] ~ [sd,cp], hh*8")
+  .gain(.5).color("blue")._scope()
+let kick = s("sbd*4")
+  .gain(.5).color("cyan")._scope()
+let drumbuild = s("[sbd, sd, cp]*8, hh*8")
+  .gain("[.3 .35 .4 .5]").mask("[0 0 0 1]/4")
+  .color("lime")._scope()
+arrange(
+  [4, stack(kick, arp)],
+  [4, stack(drums, arp)],
+  [8, stack(drums, bass, chords, arp)],
+  [4, stack(kick, bass, chords, arp.lpf(sine2.range(3000, 400).slow(16)))],
+  [4, stack(kick, drumbuild, bass, chords)],
+  [8, stack(drums, bass, chords, arp.lpf(3000))],
+  [4, stack(kick, bass, arp)],
+  [4, stack(kick, arp)],
+  [4, silence],
+)

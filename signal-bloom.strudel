@@ -1,0 +1,281 @@
+// ═══════════════════════════════════════════════════════════
+//  Signal Bloom · written by Claude (Opus 5.5) for Written by a Chatbot
+//  The song from the Signal Bloom music video (working title: Witch & Robot).
+//
+//  Sounds:
+//  · Glockenspiel: VCSL, CC0 (github.com/sgossner/VCSL)
+//  · Birds, crows, glass taps, metal, a can, glitches and Speak & Spell blips:
+//    Dirt-Samples (github.com/tidalcycles/Dirt-Samples)
+//  · TR-808 and TR-909 hits: tidal-drum-machines (github.com/ritchse/tidal-drum-machines)
+//  · Everything else is synthesized in Strudel.
+// ═══════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════════════
+//  WITCH & ROBOT (working title)  ·  124 BPM  ·  A minor  ·  104 bars (~3:21)
+//  intro 8 · her 8 · him 8 · discovery 8 · chase 8 · dance 16 · somber 12 · rise 12 · bright 16 · outro 8
+//  Parts the film syncs to carry .color("name") tags (read back as onset lists).
+// ═══════════════════════════════════════════════════════════════════════
+// TOTAL_BARS 104
+
+samples('github:tidalcycles/dirt-samples')
+samples('https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json')
+samples('https://raw.githubusercontent.com/felixroos/dough-samples/main/tidal-drum-machines.json')
+setcpm(124/4)
+
+// ─────────── HARMONY ───────────
+// her world: Am · F · C · E (the E's G# is the witchy harmonic-minor twist)
+const CH_H = "<[a3,c4,e4] [f3,a3,c4] [c4,e4,g4] [e3,g#3,b3,d4]>"
+const RT_H = "<a1 f1 c2 e1>"
+// trading version: the C bar drops its G so his G# can make a clean C augmented
+const CH_T = "<[a3,c4,e4] [f3,a3,c4] [c4,e4] [e3,g#3,b3,d4]>"
+// his world: F · G · C · C
+const CH_R = "<[f3,a3,c4] [g3,b3,d4] [c4,e4,g4] [c4,e4,g4]>"
+const RT_R = "<f1 g1 c2 c2>"
+// the dance: his world turned dark, F · G · Am · Am (his tune fits it as written)
+const CH_D = "<[f3,a3,c4] [g3,b3,d4] [a3,c4,e4] [a3,c4,e4]>"
+const RT_D = "<f1 g1 a1 a1>"
+// together and dawn: F(maj7) · C · G · Am, still in A minor, but they have each other now
+const CH_E = "<[f3,a3,c4,e4] [c4,e4,g4] [g3,b3,d4] [a3,c4,e4]>"
+const RT_E = "<f1 c2 g1 a1>"
+
+// ─────────── MELODIES ───────────
+// HER MOTIF: skipping, impish, a chromatic G# turn at the end
+const HER   = "<[a5 ~ e5 a5 c6 b5 a5 ~] [f5 ~ a5 c6 [d6 c6] a5 f5 ~] [e5 ~ g5 c6 e6 d6 c6 ~] [g#5 a5 b5 e5 ~ [d6 c6] b5 ~]>"
+// her motif reshaped for F · C · G · Am: bar 1 as written (F is voiced Fmaj7 so her E belongs), bars 2-4 follow the new chords
+// (bar 4 drops her G# turn: over A minor it rubbed against the chord's A)
+const HER_E = "<[a5 ~ e5 a5 c6 b5 a5 ~] [e5 ~ g5 c6 [d6 c6] g5 e5 ~] [d5 ~ g5 b5 d6 c6 b5 ~] [g5 a5 c6 e5 ~ [d6 c6] a5 ~]>"
+// HIS TUNE: a 3-3-2 mechanical rhythm each bar, climbing, ending on a question chirp
+const HIS   = "<[a4 ~ a4 c5 ~ f5 ~ c5] [b4 ~ b4 d5 ~ g5 ~ d5] [c5 ~ c5 e5 ~ g5 ~ e5] [c5 ~ e5 g5 c6 ~ [c6 d6] ~]>"
+// HIS TUNE, FITTED: his rhythm on her chords, under her line
+const FIT   = "<[e4 ~ e4 a4 ~ c5 ~ a4] [f4 ~ f4 a4 ~ c5 ~ a4] [g4 ~ g4 c5 ~ e5 ~ c5] [g#4 ~ g#4 b4 ~ e5 ~ [e5 g#5]]>"
+// his tune fitted under HER_E on F · C · G · Am (checked: no seconds, sevenths or tritones against her)
+const HIS_E = "<[a4 ~ a4 c5 ~ e5 ~ c5] [g4 ~ g4 c5 ~ e5 ~ c5] [g4 ~ g4 b4 ~ d5 ~ b4] [e4 ~ e4 a4 ~ c5 [e5 a5] ~]>"
+// TRADING: she opens each bar (beats 1-2), he finishes it (beats 3-4, his 3-3-2 in 16ths)
+const CALL  = `<[[a5 ~ e5 a5] ~] [[f5 ~ a5 c6] ~] [[e5 ~ g5 c6] ~] [[g#5 a5 b5 e5] ~]
+                [[c6 ~ b5 a5] ~] [[c6 ~ a5 f5] ~] [[g5 ~ c6 e6] ~] [[b5 ~ g#5 e5] ~]>`
+// his skewed answers: Dm over Am · B° over F · C+ over C · G#°7 over E; pass 2 mirrors pass 1's contours
+const ANS   = `<[~ [a5 ~ ~ f5 ~ ~ d5 ~]] [~ [b4 ~ ~ d5 ~ ~ f5 ~]] [~ [e5 ~ ~ g#5 ~ ~ c6 ~]] [~ [f5 ~ ~ d5 ~ ~ b4 g#4]]
+                [~ [d5 ~ ~ f5 ~ ~ a5 ~]] [~ [f5 ~ ~ d5 ~ ~ b4 ~]] [~ [c6 ~ ~ g#5 ~ ~ e5 ~]] [~ [g#4 ~ ~ b4 ~ ~ d5 [f5 g#5]]]>`
+
+// ─────────── CITY (orbit 4) ───────────
+let wind    = s("pink").attack(2).release(2).lpf(sine.range(300, 1100).slow(6))
+                .gain(sine.range(0.15, 0.4).slow(5)).pan(sine.slow(9)).orbit(4)
+// neon hum on E: E sits in every chord of her loop, so it never rubs
+let hum     = note("[e2,e3]").s("sawtooth").lpf(400).bpf(240).gain(sine.range(0.06, 0.13).fast(15)).orbit(4)
+let crackle = s(`<[~ ~ ~ ~ ~ ~ glitch:3 ~] [~ ~ glitch:5 ~ ~ ~ ~ ~] [~ ~ ~ ~ ~ glitch:2 glitch:2 ~] [glitch:6 ~ ~ ~ ~ ~ ~ ~]
+                  [~ ~ ~ glitch:3 ~ ~ ~ ~] [~ ~ ~ ~ ~ ~ ~ ~] [~ glitch:5 ~ ~ ~ ~ ~ glitch:2] [~ ~ ~ ~ glitch:6 ~ ~ ~]>`)
+                .hpf(3000).gain(0.2).pan(rand).orbit(4).color("crackle")
+let crows   = s("<crow:0 ~ ~ crow:2 ~ crow:1 ~ ~>").gain(0.28).room(0.7).size(6).pan(rand).orbit(4).color("crow")
+let birds   = s("[~ birds3:<0 3 7 11>] ~ [~ ~ birds:<1 4 6>] ~").slow(2).gain(0.26).pan(rand).room(0.6).size(4).orbit(4)
+// a neon sign buzzing on
+let neonOn  = note("e3").s("sawtooth").bpf(1500).bpq(3).decay(0.35).sustain(0)
+                .gain(sine.range(0.1, 0.3).fast(32)).room(0.3).orbit(4).color("neon")
+let drone   = note("[a1,e2]").s("sawtooth").attack(1.5).release(2).lpf(sine.range(200, 600).slow(8)).gain(0.22).room(0.6).orbit(2)
+let droneH  = note(RT_H).add(note("0,7")).s("sawtooth").attack(0.8).release(1.5).lpf(380).gain(0.16).room(0.6).orbit(2)
+
+// ─────────── CHARACTERS (orbit 2) ───────────
+let girl     = note(HER).s("glockenspiel").clip(2).gain(7).room(0.5).size(4)
+                 .delay(0.25).delaytime(0.363).delayfeedback(0.3).orbit(2).color("girl")
+let girlCall = note(CALL).s("glockenspiel").clip(1.5).release(0.25).gain(7).room(0.45).size(4).orbit(2).color("girl")
+let girlE    = note(HER_E).s("glockenspiel").clip(2).gain(20).room(0.5).size(4)
+                 .delay(0.2).delaytime(0.363).delayfeedback(0.25).orbit(5).color("girl")
+// her skipping steps: long-short, a hop on every beat
+let skip     = s("[glasstap ~ ~ glasstap]*4").n("<0 1 2 1>").gain("[0.22 0.12]*4").hpf(2000).pan(0.4).orbit(4).color("skip")
+const bot    = (p) => note(p).s("square").decay(0.09).sustain(0.25).release(0.05).penv(-3).pdecay(0.03)
+                       .crush(5).lpf(2600).pan(0.62).room(0.3).orbit(2).color("robot")
+let robot    = bot(HIS).gain(0.6)
+let robotAns = bot(ANS).gain(0.5)
+let robotFit = bot(FIT).crush(6).gain(0.42)
+let robotE   = bot(HIS_E).crush(6).gain(1.2).orbit(5)
+// the dance lead: his own tune, beefed up, his chirpy square plus a gritty saw an octave up
+// (orbit 5: kept out of the kick's ducking so the melody stays clear while everything else pumps)
+let robotLead= stack(bot(HIS).gain(1.9),
+                     note(HIS).add(note(12)).s("sawtooth").detune(0.2).decay(0.12).sustain(0.4).release(0.05)
+                       .lpf(3200).distort("1.5:0.3").gain(0.55).pan(0.45).delay(0.2).delaytime(0.242).delayfeedback(0.25))
+                 .orbit(5).color("robot")
+let servo    = s("glitch:<1 3>*4").struct("x ~ x x ~ x ~ x").hpf(1500).gain(0.22).pan(0.65).orbit(1).color("servo")
+let blips    = s("speakspell*8").n(irand(12)).degradeBy(0.85).hpf(600).crush(6).gain(0.08).pan(0.7).orbit(2)
+let clank    = s("<[metal:0 ~ ~ ~ ~ ~ ~ ~] ~ [metal:2 ~ ~ metal:2 ~ ~ ~ ~] ~>").gain(0.35).room(0.4).pan(0.7).orbit(1).color("clank")
+// zap and the can it sends bouncing (bounce gaps shrink like a real bounce)
+let zap      = stack(note("c7").s("square").penv(-36).pdecay(0.25).decay(0.3).sustain(0).crush(4).gain(0.35),
+                     s("white").decay(0.15).sustain(0).hpf(4000).gain(0.25)).orbit(4).color("zap")
+let canHits  = stack(...[[0, 1, 0.55], [8, 2, 0.45], [13, 1, 0.36], [17, 3, 0.28], [19, 2, 0.22], [21, 1, 0.17], [22, 3, 0.13]]
+                 .map(([t, n, g]) => s("can").n(n).gain(g).late(t / 32))).room(0.3).pan(0.3).orbit(1).color("can")
+let reboot   = stack(note("e3").s("square").penv(-24).pdecay(0.9).decay(1).sustain(0).crush(5).gain(0.3),
+                     note("[c5 e5 g5 c6]").s("square").decay(0.1).sustain(0.2).crush(6).gain(0.3).late(0.5)).orbit(2).color("reboot")
+let sparkle  = note(CH_H).arp("[0 1 2 1]*4").add(note(24)).s("glockenspiel").clip(1).gain(2.2).hpf(1500).pan(sine.fast(2)).room(0.6).orbit(2).color("magic")
+// her magic on his beat: quick chord-tone flicks in the gaps, denser in the second half, a torrent for the overload
+const SPK1 = "~ ~ ~ ~ ~ ~ [0 1 2] ~ ~ ~ ~ ~ ~ ~ [2 1 0] ~"
+const SPK2 = "~ ~ [0 1 2] ~ ~ ~ [2 1 0] ~ ~ ~ [0 1 2] ~ ~ ~ [0 1 2 1 2] ~"
+const SPK3 = "[0 1 2 1]*4"
+const spark  = (ch, p) => note(ch).arp(p).add(note(24)).s("glockenspiel").clip(1).gain(14).hpf(1200)
+                            .pan(sine.fast(3)).room(0.5).size(4).delay(0.2).delaytime(0.182).delayfeedback(0.3).orbit(5).color("magic")
+
+// ─────────── BAND (orbit 2 = keys, 3 = bass, 1 = drums) ───────────
+const tr = (p) => s(p).bank("RolandTR808")
+const t9 = (p) => s(p).bank("RolandTR909")
+let padH   = note(CH_H).sub(note(12)).s("supersaw").detune(0.4).attack(0.8).release(1.5).lpf(900).gain(0.14).room(0.6).size(7).orbit(2)
+let padT   = note(CH_T).sub(note(12)).s("supersaw").detune(0.4).attack(0.8).release(1.5).lpf(900).gain(0.14).room(0.6).size(7).orbit(2)
+let padR   = note(CH_R).sub(note(12)).s("supersaw").detune(0.2).attack(0.3).release(0.8).lpf(1400).gain(0.14).orbit(2)
+let padD   = note(CH_D).sub(note(12)).s("supersaw").detune(0.4).attack(0.3).release(0.8).lpf(1100).gain(0.11).room(0.4).orbit(2)
+let stabsD = note(CH_D).struct("~ x ~ x ~ x ~ x").s("supersaw").detune(0.5).decay(0.13).sustain(0).lpf(3000).distort("1:0.3").gain(0.9).orbit(2)
+let padE   = note(CH_E).sub(note(12)).s("supersaw").detune(0.3).attack(0.4).release(1.2).lpf(2000).gain(0.14).room(0.5).size(6).orbit(2)
+let stabsE = note(CH_E).struct("~ x ~ x ~ x ~ x").s("supersaw").decay(0.12).sustain(0).lpf(3500).gain(0.14).orbit(2)
+let arpT   = note(CH_T).arp("0 1 2 1 0 1 2 1 0 1 2 1 0 1 2 1").add(note(12)).s("square")
+               .decay(0.08).sustain(0).lpf(sine.range(900, 3000).slow(4)).gain(0.12).pan(0.35).orbit(2)
+let arpE   = note(CH_E).arp("0 1 2 1 0 1 2 1 0 1 2 1 0 1 2 1").add(note(12)).s("square")
+               .decay(0.08).sustain(0).lpf(3200).gain(0.12).pan(0.35).delay(0.2).delaytime(0.363).delayfeedback(0.3).orbit(2)
+const GROOVE = "x ~ x x ~ x x ~ x ~ x x ~ x ~ x"
+let gbass  = note(RT_H).add(note("0,12")).struct(GROOVE).s("sawtooth").decay(0.15).sustain(0.3)
+               .lpf(sine.range(400, 2400).fast(2)).lpq(10).distort("2:0.4").gain(0.3).orbit(3)
+let gbassD = note(RT_D).add(note("0,12")).struct(GROOVE).s("sawtooth").decay(0.15).sustain(0.35)
+               .lpf(sine.range(500, 3000).fast(2)).lpq(12).distort("2.5:0.4").gain(0.32).orbit(3)
+let gbassE = note(RT_E).add(note("0,12")).struct(GROOVE).s("sawtooth").decay(0.15).sustain(0.3)
+               .lpf(sine.range(500, 2800).fast(2)).lpq(8).distort("1.5:0.4").gain(0.3).orbit(3)
+let subH   = note(RT_H).s("sine").gain(0.42).orbit(3)
+let subR   = note(RT_R).s("sine").gain(0.2).orbit(3)
+let subD   = note(RT_D).s("sine").gain(0.48).orbit(3)
+let subE   = note(RT_E).s("sine").gain(0.42).orbit(3)
+let kick   = t9("bd*4").gain(0.9).shape(0.4).duckorbit("2:3").duckattack(0.1).duckdepth(0.6).color("kick")
+let snare  = tr("~ sd ~ sd").gain(0.7).distort("1:0.4").room(0.3).color("snare")
+let hats   = tr("hh*16").gain("[0.1 0.18 0.14 0.24]*4").hpf(5000).color("hat")
+let ohats  = t9("[~ oh]*4").gain(0.22).hpf(3000)
+let cow    = tr("~ ~ ~ ~ ~ ~ cb ~ ~ ~ ~ ~ ~ cb ~ ~").gain(0.2).hpf(800)
+let hKick  = t9("bd ~ ~ ~ ~ ~ ~ ~ ~ ~ bd ~ ~ ~ ~ ~").gain(0.7).shape(0.3).color("kick")
+// the dance kit: a 909 kick with an 808 sub under it pumping everything harder, clap on the snare, a fill into bar 9
+let kickD  = stack(t9("<[bd*4]!7 [bd bd bd ~]>").gain(0.85).shape(0.5), tr("<[bd*4]!7 [bd bd bd ~]>").lpf(160).gain(0.4))
+               .duckorbit("2:3").duckattack(0.08).duckdepth(0.8).color("kick")
+let snareD = stack(tr("~ sd ~ sd").gain(0.75).distort("1:0.4"), t9("~ cp ~ cp").gain(0.55)).room(0.25).color("snare")
+let fillD  = t9("<~!7 [~ ~ [sd sd] [sd sd sd sd]]>").gain(0.55).color("snare")
+let hSnare = tr("~ ~ sd ~").gain(0.6).distort("1:0.4").room(0.3).color("snare")
+let crash  = t9("cr").gain(0.5).color("crash")
+let boom   = note("a1").s("sine").penv(18).pdecay(1).decay(1.8).sustain(0).gain(0.85).distort("1:0.5").orbit(3).color("boom")
+let riser8 = s("white*16").attack(0.005).release(0.06).hpf(saw.range(300, 9000).slow(8)).gain(saw.range(0, 0.3).slow(8)).orbit(4)
+let riser4 = s("white*16").attack(0.005).release(0.06).hpf(saw.range(300, 9000).slow(4)).gain(saw.range(0, 0.3).slow(4)).orbit(4)
+let swell8 = note("[a2,e3,a3]").s("sawtooth").attack(0.3).release(0.4).lpf(saw.range(300, 4000).slow(8)).gain(saw.range(0.04, 0.15).slow(8)).orbit(4)
+
+// ─────────── SECTIONS ───────────
+// 1 · dead city: wind, hum, crackles, crows, the drone; a slow heartbeat and the first hop at the very end
+let intro = stack(
+  wind.velocity(1.2), hum, crackle, crows, drone,
+  padH.lpf(600).velocity(0.6).mask("<0!4 1!4>"),
+  t9("bd ~ ~ ~ ~ ~ ~ ~").lpf(400).gain(0.3).mask("<0!4 1!4>").color("kick"),
+  skip.mask("<0!7 [0 0 0 1]>"),
+)
+
+// 2 · her: the motif alone, twice; hops from bar 3; neon signs buzz on as she passes
+let her = stack(
+  wind.velocity(0.5), hum.velocity(0.7), crackle, droneH, padH, girl.gain(8),
+  skip.mask("<0 0 1!6>"),
+  neonOn.struct("<[~ ~ ~ ~ x ~ ~ ~] ~ [~ ~ ~ ~ ~ ~ x ~] ~ [~ ~ ~ ~ x ~ ~ ~] [~ ~ x ~ ~ ~ ~ ~] [~ ~ ~ ~ ~ ~ x ~] ~>"),
+)
+
+// 3 · him: his own tune, twice, in the scrapyard; hammering on the sign
+let him = stack(
+  wind.velocity(0.4), hum.velocity(0.6), padR, subR, robot, servo, blips, clank,
+)
+
+// 4 · discovery: they trade phrases; the half-time beat creeps in
+let discovery = stack(
+  wind.velocity(0.4), crows, padT, subH, girlCall, robotAns, servo.gain(0.12),
+  hKick.lpf(saw.range(300, 3000).slow(8)).velocity(saw.range(0.3, 0.75).slow(8)).mask("<0 0 1!6>"),
+  hSnare.velocity(0.7).mask("<0!4 1!4>"),
+)
+
+// 5 · chase: the zap launches it; build to a silent last bar where she spins round
+let chase = stack(
+  zap.mask("<1 0!7>"), canHits.mask("<1 0!7>"),
+  stack(
+    swell8, riser8, gbass.lpf(saw.range(300, 1800).slow(8)).velocity(0.7), subH.mask("<0 0 1!6>"),
+    note("[a5 ~ e5 a5 c6 b5 a5 e5]").s("glockenspiel").clip(1).gain(saw.range(3, 6).slow(8)).room(0.4).orbit(2).color("girl").mask("<0 1!5 0 0>"),
+    s("glitch:1*16").hpf(1500).gain(saw.range(0.06, 0.2).slow(8)).pan(0.65).orbit(1).color("servo").mask("<0 0 1!5 0>"),
+    hats.velocity(saw.range(0.4, 1).slow(8)),
+    t9("<[sd*4]!3 [sd*8]!2 [sd*16] [[sd*16] [sd*32]] ~>").gain(saw.range(0.3, 0.7).slow(8)).color("snare"),
+    t9("<~!4 bd*4 bd*4 bd*8 ~>").gain(0.6).lpf(saw.range(400, 4000).slow(8)).color("kick"),
+  ).mask("<1!7 0>"),
+  // the silent bar: two beats of nothing, then he goes "bee'woo... beep?", a beat of silence, and the drop answers
+  stack(
+    bot("<~!7 [~ ~ ~ ~ ~ ~ ~ ~ g5 ~ ~ ~ ~ ~ ~ ~]>").decay(0.08).sustain(0.35),                             // bee
+    bot("<~!7 [~ ~ ~ ~ ~ ~ ~ ~ ~ d5@2 ~ ~ ~ ~ ~]>").penv(5).pdecay(0.14).decay(0.2).sustain(0.5),           // 'woo (gliding down from G)
+    bot("<~!7 [~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ a5 ~ ~ ~ ~]>").penv(-5).pdecay(0.07).decay(0.1).sustain(0.35),         // beep? (bending up)
+  ).gain(1.1).room(0.2).orbit(5),
+)
+
+// 6 · dance-off: he takes over with his own tune on a harder beat; once he's played it through, she's won over
+//     and her magic creeps in (bars 5-8), fills out at the re-drop (bar 9), then overloads (bars 13-16)
+let dance = stack(
+  crash.mask("<1 0!7>"), boom.mask("<1 0!7>"),
+  kickD, snareD, fillD, hats, ohats.velocity(1.3), cow, gbassD, subD, padD,
+  robotLead, robotLead.add(note(12)).velocity(0.5).mask("<0!8 1!8>"),
+  stabsD.mask("<0!8 1!8>"),
+  spark(CH_D, SPK1).velocity(saw.range(0.25, 0.9).slow(4)).mask("<0!4 1!4 0!8>"), spark(CH_D, SPK2).mask("<0!8 1!4 0!4>"),
+  spark(CH_D, SPK3).velocity(saw.range(0.5, 1.3).slow(4)).lpf(saw.range(2500, 9000).slow(4)).mask("<0!12 1!4>"),
+  riser4.mask("<0!12 1!4>"),
+).mask("<1!15 [1 1 1 [1 0]]>")
+
+// 7 · the fall: one low hit and a dark chord blooming into reverb; his tune winds down, falling and slowing onto A;
+//     her motif at half speed; faint echoes of him
+let impact = stack(
+  note("a1").s("sine").penv(7).pdecay(0.6).decay(4).sustain(0).gain(0.75).distort("0.6:0.5").orbit(3),
+  note("[a2,e3,a3,c4]").s("supersaw").detune(0.5).decay(3).sustain(0).lpf(700).gain(0.16).room(0.9).size(10).orbit(2),
+  s("pink").decay(1.8).sustain(0).lpf(1800).hpf(200).gain(0.22).room(0.8).size(8).orbit(4),
+).color("impact")
+let windDown = note("<[~ ~ e5 ~ ~ d5 ~ ~ ~ ~ c5 ~ ~ ~ ~ ~] [~ ~ ~ b4 ~ ~ ~ ~ ~ ~ ~ ~ a4 ~ ~ ~] ~!10>")
+  .s("square").decay(0.5).sustain(0).penv(-3).pdecay(0.03).crush(6).lpf("<1600 800 800!10>").gain("<0.3 0.22 0!10>")
+  .room(0.5).delay(0.3).delaytime(0.363).delayfeedback(0.3).pan(0.62).orbit(2).color("powerdown")
+let somber = stack(
+  impact.mask("<1 0!11>"), windDown,
+  wind.velocity(1.2),
+  note("<~ [a3,c4,e4]!3 [f3,a3,c4]!2 [d3,f3,a3]!2 [e3,g#3,b3,d4]!4>").sub(note(12)).s("supersaw").detune(0.4)
+    .attack(1.2).release(2).lpf(700).gain(0.13).room(0.7).size(8).orbit(2),
+  note("<~ a1!3 f1!2 d2!2 e1!4>").add(note("0,7")).s("sawtooth").attack(1).release(2).lpf(300).gain(0.15).orbit(2),
+  note(HER).slow(2).late(2).s("glockenspiel").clip(3).gain(6).room(0.7).size(6)
+    .delay(0.3).delaytime(0.726).delayfeedback(0.35).orbit(2).color("girl").mask("<0 0 1!8 0 0>"),
+  note("<~!4 [~ ~ ~ ~ a4 ~ ~ ~] ~ ~ [~ ~ ~ ~ ~ ~ c5 ~] ~ ~ [~ ~ ~ ~ e5 ~ ~ ~] ~>").s("square")
+    .decay(0.2).sustain(0).lpf(900).gain(0.13).delay(0.4).delaytime(0.726).delayfeedback(0.4).room(0.5).pan(0.62).orbit(2).color("robot"),
+)
+
+// 8 · repair: her motif alone with magic; he reboots on bar 5 and plays his tune right, under hers; build
+let rise = stack(
+  wind.velocity(0.5), padH.lpf(saw.range(700, 2400).slow(12)).velocity(1.4), droneH.velocity(1.4),
+  girl.gain(10), sparkle.velocity(saw.range(0.6, 1.4).slow(4)).mask("<1!4 0!8>"),
+  reboot.mask("<0!4 1 0!7>"), robotFit.mask("<0!4 1!8>"),
+  hKick.mask("<0!4 1!4 0!4>"),
+  stack(kick, hats.velocity(0.7), subH, gbass.lpf(saw.range(400, 2000).slow(4)).velocity(0.6), riser4,
+        t9("<[sd*4] [sd*8] [sd*16] [[sd*16] [sd*32]]>").gain(saw.range(0.3, 0.7).slow(4)).color("snare")).mask("<0!8 1!4>"),
+).mask("<1!11 [1 0]>")
+
+// 9 · together: the beat returns on F · C · G · Am, her motif and his tune in harmony; her magic joins in the second half
+let bright = stack(
+  crash.mask("<1 0!7>"), boom.mask("<1 0!15>"),
+  kick, snare, hats, ohats, cow, gbassE, subE, padE,
+  girlE, robotE, arpE.mask("<0!8 1!8>"), stabsE.mask("<0!8 1!8>"), spark(CH_E, SPK1).velocity(0.8).mask("<0!8 1!8>"),
+)
+
+// 10 · dawn: the beat falls away on F · C · G · Am, birds; his question chirp, her answer on A minor, crows take off
+let outro = stack(
+  stack(kick, hats.velocity(0.6), subE).velocity(0.6).mask("<1 1 0!6>"),
+  padE.lpf(saw.range(2000, 600).slow(8)).mask("<1!7 0>"),
+  note(RT_E).add(note("0,7")).s("sawtooth").attack(1).release(3).lpf(400).gain(0.12).orbit(2).mask("<1!7 0>"),
+  birds, wind.velocity(0.3),
+  s("<~!3 [crow:0 crow:2 ~ crow:1] [crow:2 ~ crow:0 ~] ~!3>").gain(0.3).room(0.7).size(6).pan(rand).orbit(4).color("crow"),
+  note(HER_E).s("glockenspiel").clip(2).gain(7).room(0.6).size(5).delay(0.3).delaytime(0.363).delayfeedback(0.35)
+    .orbit(2).color("girl").mask("<0 0 1 1 0!4>"),
+  bot("<~!6 [~ ~ ~ ~ ~ ~ [d5 g5] ~] ~>").gain(0.4),
+  note("<~!7 [[a5,c6,e6] ~ ~ ~]>").s("glockenspiel").clip(8).gain(7).room(0.7).size(6).orbit(2).color("girl"),
+  note("<~!7 [a2,e3,a3,c4,e4]>").s("supersaw").attack(0.05).release(4).lpf(1200).gain(0.12).room(0.7).size(8).orbit(2),
+)
+
+// ─────────── ARRANGEMENT ───────────
+arrange(
+  [8, intro.velocity(1.4)],
+  [8, her.velocity(1.4)],
+  [8, him.velocity(1.4)],
+  [8, discovery.velocity(1.2)],
+  [8, chase],
+  [16, dance],
+  [12, somber.velocity(1.4)],
+  [12, rise],
+  [16, bright],
+  [8, outro.velocity(1.3)],
+).postgain(0.4)

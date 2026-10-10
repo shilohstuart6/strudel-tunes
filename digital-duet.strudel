@@ -1,0 +1,68 @@
+setcpm(120/4)
+
+// DRUMS
+let kick    = s("bd*4").bank("RolandTR909").gain(0.9).color("darkblue")
+let snare   = s("~ sd ~ sd").bank("RolandTR909").gain(0.8).color("purple")
+let hats    = s("hh*8").bank("RolandTR909").gain("0.3 0.45").color("green")
+let openhat = s("~ ~ oh ~").bank("RolandTR909").gain(0.35).color("salmon")
+let clap    = s("~ ~ ~ cp").bank("RolandTR909").gain(0.6).color("gold")
+
+let drums      = stack(kick, snare, hats, openhat)
+let drumsBuild = stack(kick, snare, hats, openhat, clap)
+
+// BASS
+let bass = n("0 ~ 0 2 ~ 0 -3 ~").scale("d2:minor").s("sawtooth")
+  .gain(0.8).lpf(600).distort(0.15).color("lime")
+
+// CHORDS
+let chords = n("<0 0 -3 -3>").add(n("0,2,4")).scale("d3:minor").s("gm_epiano1")
+  .gain(0.3).lpf(1500).room(0.4).color("magenta")
+
+// CALL & RESPONSE VOICES
+// voice A calls from the left, voice B answers from the right, trading every half-bar
+let call1     = n("0 2 4 5 ~ ~ ~ ~").scale("d4:minor").s("square")
+  .gain(0.55).adsr(0.01, 0.1, 0.4, 0.1).lpf(2200).pan(0.15).color("cyan")
+let response1 = n("~ ~ ~ ~ 5 4 2 0").scale("d4:minor").s("sawtooth")
+  .gain(0.5).adsr(0.01, 0.15, 0.3, 0.2).lpf(1800).delay(0.2).pan(0.85).color("orange")
+
+let call2     = n("7 ~ 5 4 2 ~ 0 ~").scale("d4:minor").s("square")
+  .gain(0.55).adsr(0.01, 0.1, 0.4, 0.1).lpf(2200).pan(0.15).color("cyan")
+let response2 = n("~ 7 ~ 5 ~ 2 ~ 0").scale("d4:minor").s("sawtooth")
+  .gain(0.5).adsr(0.01, 0.15, 0.3, 0.2).lpf(1800).delay(0.2).pan(0.85).color("orange")
+
+let duetA = stack(call1, response1)
+let duetB = stack(call2, response2)
+let duet  = cat(duetA, duetA, duetB, duetB)
+
+// BUILD-UP — a couple more call & response patterns, trading tighter and busier
+// as we head toward the finale
+let call3     = n("0 2 4 5 7 ~ ~ ~").scale("d4:minor").s("square")
+  .gain(0.55).adsr(0.01, 0.1, 0.35, 0.1).lpf(2300).pan(0.15).color("cyan")
+let response3 = n("~ ~ ~ 5 ~ 7 5 4").scale("d4:minor").s("sawtooth")
+  .gain(0.5).adsr(0.01, 0.12, 0.3, 0.15).lpf(1900).delay(0.2).pan(0.85).color("orange")
+
+let call4     = n("0 2 4 ~ 7 9 7 ~").scale("d4:minor").s("square")
+  .gain(0.58).adsr(0.01, 0.1, 0.3, 0.1).lpf(2400).pan(0.15).color("cyan")
+let response4 = n("~ 5 ~ 7 9 ~ 4 5").scale("d4:minor").s("sawtooth")
+  .gain(0.52).adsr(0.01, 0.12, 0.25, 0.15).lpf(2000).delay(0.2).pan(0.85).color("orange")
+
+let duetC   = stack(call3, response3)
+let duetD   = stack(call4, response4)
+let buildup = cat(duetC, duetC, duetD, duetD)
+
+// FINALE — the two voices interlock faster, call and response overlapping
+let callFinale     = n("0 2 4 5 7 5 4 2").scale("d4:minor").s("square")
+  .gain(0.6).adsr(0.01, 0.1, 0.3, 0.1).lpf(2500).pan(0.15).color("cyan")
+let responseFinale = n("2 4 5 7 0 2 4 5").scale("d4:minor").s("sawtooth")
+  .gain(0.55).adsr(0.01, 0.15, 0.3, 0.2).lpf(2000).delay(0.2).pan(0.85).color("orange")
+let duetFinale = stack(callFinale, responseFinale)
+
+// ARRANGEMENT
+arrange(
+  [2, stack(kick, bass)],
+  [2, stack(drums, bass)],
+  [8, stack(drums, bass, chords, duet)],
+  [4, stack(drumsBuild, bass, chords, buildup)],
+  [4, stack(drumsBuild, bass, chords, duetFinale)],
+  [2, stack(kick, bass)],
+).scope()
